@@ -2,10 +2,9 @@
 using SDL2;
 
 namespace Machinarius.DoomThing;
-public class EntryPoint
-{
-  public static void Main()
-  {
+
+public class EntryPoint {
+  public static void Main() {
     SDL.SDL_Init(SDL.SDL_INIT_VIDEO);
 
     var window = SDL.SDL_CreateWindow(
@@ -21,8 +20,8 @@ public class EntryPoint
 
     SDL.SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL.SDL_RenderDrawLine(renderer, 0, 480, 320, 0);
-	  SDL.SDL_RenderDrawLine(renderer, 640, 480, 320, 0);
-	  SDL.SDL_RenderDrawLine(renderer, 0, 480, 640, 480);
+    SDL.SDL_RenderDrawLine(renderer, 640, 480, 320, 0);
+    SDL.SDL_RenderDrawLine(renderer, 0, 480, 640, 480);
     SDL.SDL_RenderPresent(renderer);
 
     var running = true;
