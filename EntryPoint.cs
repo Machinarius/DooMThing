@@ -1,4 +1,5 @@
 ﻿using System;
+using Machinarius.DoomThing.Engine;
 using Machinarius.DoomThing.SDLWrappers;
 using SDL2;
 
@@ -7,6 +8,9 @@ namespace Machinarius.DoomThing;
 public class EntryPoint {
   public static void Main() {
     SDL.SDL_Init(SDL.SDL_INIT_VIDEO);
+
+    var engine = new DoomEngine(Path.Combine(".", "Data", "DOOM1.WAD"));
+    engine.Initialize();
 
     using (var window = new SDLWindow("Simple Triangle", 800, 600)) {
       using var renderer = new SDLRenderer(window);
