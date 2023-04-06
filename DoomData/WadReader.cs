@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Machinarius.DoomThing.DoomData;
 
 public class WadReader: IDisposable {
@@ -26,10 +28,32 @@ public class WadReader: IDisposable {
     wadStream.Seek(offset, SeekOrigin.Begin);
     var intBuffer = new byte[4];
     if (wadStream.Read(intBuffer, 0, 4) != 4) {
-      throw new InvalidOperationException($"Could not read 4 bytes for an int as you requested");
+      throw new InvalidOperationException($"Could not read 4 bytes for an int you requested");
     }
     var result = BitConverter.ToInt32(intBuffer);
     return result;
+  }
+
+  public short ReadShort(int offset) {
+    wadStream.Seek(offset, SeekOrigin.Begin);
+    var shortBuffer = new byte[2];
+    if (wadStream.Read(shortBuffer, 0, 2) != 2) {
+      throw new InvalidOperationException($"Could not read 2 bytes for a short you requested");
+    }
+    var result = BitConverter.ToInt16(shortBuffer);
+    return result;
+  }
+
+  public byte ReadByte(int offset) {
+    wadStream.Seek(offset, SeekOrigin.Begin);
+    var result = wadStream.ReadByte();
+    return (byte)result;
+  }
+
+  public Vector2 ReadVertex(int offset) {
+    var x = ReadShort(offset);
+    var y = ReadShort(offset + 2);
+    return new Vector2(x, y);
   }
 
   public void Dispose() {
