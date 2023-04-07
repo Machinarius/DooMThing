@@ -24,7 +24,8 @@ public class WadLevel {
     this.wadReader = wadReader ?? throw new ArgumentNullException(nameof(wadReader));
   }
 
-  public Vector2[] Vertexes => DataDirectories.Vertexes.GetData(wadReader.ReadVertex, 4, 0);
+  public Vector2[] Vertexes => DataDirectories.Vertexes.GetData(wadReader.ReadVertex, 4);
+  public WadLineDefinition[] LineDefinitions => DataDirectories.LineDefinitions.GetData(wadReader.ReadLineDefinition, 14);
 
   public class LinkedDirectories {
     private readonly WadFile wadFile;

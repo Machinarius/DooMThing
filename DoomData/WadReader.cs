@@ -1,3 +1,4 @@
+using SDL2;
 using System.Numerics;
 
 namespace Machinarius.DoomThing.DoomData;
@@ -54,6 +55,19 @@ public class WadReader: IDisposable {
     var x = ReadShort(offset);
     var y = ReadShort(offset + 2);
     return new Vector2(x, y);
+  }
+
+  public WadLineDefinition ReadLineDefinition(int offset) {
+    var start = ReadShort(offset);
+    var end = ReadShort(offset + 2);
+    var flags = ReadShort(offset + 4);
+    var type = ReadShort(offset + 6);
+    var sector = ReadShort(offset + 8);
+    var frontSide = ReadShort(offset + 10);
+    var backSide = ReadShort(offset + 12);
+    return new WadLineDefinition(
+      start, end, flags, type, sector, frontSide, backSide
+    );
   }
 
   public void Dispose() {

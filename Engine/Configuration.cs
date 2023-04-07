@@ -8,4 +8,6 @@ public static class Configuration {
 
   public static int WindowHeight => (int)Math.Floor(DoomHeight * ScaleFactor);
   public static int WindowWidth => (int)Math.Floor(DoomWidth * ScaleFactor);
+
+  public const int Padding = 30;
 }

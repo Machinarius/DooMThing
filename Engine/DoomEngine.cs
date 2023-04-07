@@ -11,25 +11,27 @@ public class DoomEngine : IDisposable {
   private readonly WadReader wadReader;
   private readonly WadFile wadFile;
   private readonly SDLClock clock;
-  private readonly SDLRenderer renderer;
+  public readonly SDLRenderer Renderer;
 
   public const string EntryPointLevel = "E1M1";
 
-  private WadLevel? currentLevel;
+  public WadLevel? CurrentLevel { get; private set; }
+  private MapRenderer? mapRenderer;
 
   public DoomEngine(string wadPath, SDLClock clock, SDLRenderer renderer) {
     WadPath = wadPath;
     wadReader = new WadReader(wadPath);
+    Renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
     
     wadFile = ReadHeader();
 
     this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
-    this.renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
   }
 
   public void Initialize() {
     ReadDirectories();
-    currentLevel = GetLevel(EntryPointLevel);
+    CurrentLevel = GetLevel(EntryPointLevel);
+    mapRenderer = new MapRenderer(this);
   }
 
   public void Update() {
@@ -37,14 +39,11 @@ public class DoomEngine : IDisposable {
   }
 
   public void Draw() {
-    renderer.SetDrawColor(Color.Red);
-    renderer.DrawLine(new Vector2(0, 480), new Vector2(320, 0));
-    renderer.DrawLine(new Vector2(640, 480), new Vector2(320, 0));
-    renderer.DrawLine(new Vector2(0, 480), new Vector2(640, 480));
-    renderer.RenderToScreen();
+    mapRenderer?.DrawVertexes();
+    Renderer.RenderToScreen();
 
-    renderer.SetDrawColor(Color.Black);
-    renderer.ClearScreen();
+    Renderer.SetDrawColor(Color.Black);
+    Renderer.ClearScreen();
   }
 
   private WadFile ReadHeader() {
