@@ -1,6 +1,8 @@
 using Machinarius.DoomThing.DoomData;
 using Machinarius.DoomThing.SDLWrappers;
 using SDL2;
+using System.Drawing;
+using System.Numerics;
 
 namespace Machinarius.DoomThing.Engine;
 
@@ -35,14 +37,14 @@ public class DoomEngine : IDisposable {
   }
 
   public void Draw() {
-    SDL.SDL_SetRenderDrawColor(renderer.Handle, 255, 0, 0, 255);
-    SDL.SDL_RenderDrawLine(renderer.Handle, 0, 480, 320, 0);
-    SDL.SDL_RenderDrawLine(renderer.Handle, 640, 480, 320, 0);
-    SDL.SDL_RenderDrawLine(renderer.Handle, 0, 480, 640, 480);
-    SDL.SDL_RenderPresent(renderer.Handle);
+    renderer.SetDrawColor(Color.Red);
+    renderer.DrawLine(new Vector2(0, 480), new Vector2(320, 0));
+    renderer.DrawLine(new Vector2(640, 480), new Vector2(320, 0));
+    renderer.DrawLine(new Vector2(0, 480), new Vector2(640, 480));
+    renderer.RenderToScreen();
 
-    SDL.SDL_SetRenderDrawColor(renderer.Handle, 0, 0, 0, 255);
-    SDL.SDL_RenderClear(renderer.Handle);
+    renderer.SetDrawColor(Color.Black);
+    renderer.ClearScreen();
   }
 
   private WadFile ReadHeader() {
