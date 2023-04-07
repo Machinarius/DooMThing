@@ -1,4 +1,3 @@
-using System;
 using SDL2;
 
 namespace Machinarius.DoomThing.SDLWrappers;
@@ -10,12 +9,12 @@ public class SDLWindow : IDisposable {
 
   public SDLWindow(string title, int width, int height) {
     Handle = SDL.SDL_CreateWindow(
-        title,
-        SDL.SDL_WINDOWPOS_CENTERED,
-        SDL.SDL_WINDOWPOS_CENTERED,
-        width,
-        height,
-        SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN
+      title,
+      SDL.SDL_WINDOWPOS_CENTERED,
+      SDL.SDL_WINDOWPOS_CENTERED,
+      width,
+      height,
+      SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN
     );
   }
 
