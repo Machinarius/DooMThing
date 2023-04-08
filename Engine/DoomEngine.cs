@@ -1,8 +1,6 @@
 using Machinarius.DoomThing.DoomData;
-using Machinarius.DoomThing.SDLWrappers;
-using SDL2;
+using Machinarius.DoomThing.Platform;
 using System.Drawing;
-using System.Numerics;
 
 namespace Machinarius.DoomThing.Engine;
 
@@ -10,22 +8,19 @@ public class DoomEngine : IDisposable {
   public readonly string WadPath;
   private readonly WadReader wadReader;
   private readonly WadFile wadFile;
-  private readonly SDLClock clock;
-  public readonly SDLRenderer Renderer;
+  public readonly IGraphicsRenderer Renderer;
 
   public const string EntryPointLevel = "E1M1";
 
   public WadLevel? CurrentLevel { get; private set; }
   private MapRenderer? mapRenderer;
 
-  public DoomEngine(string wadPath, SDLClock clock, SDLRenderer renderer) {
+  public DoomEngine(string wadPath, IGraphicsRenderer renderer) {
     WadPath = wadPath;
     wadReader = new WadReader(wadPath);
     Renderer = renderer ?? throw new ArgumentNullException(nameof(renderer));
     
     wadFile = ReadHeader();
-
-    this.clock = clock ?? throw new ArgumentNullException(nameof(clock));
   }
 
   public void Initialize() {

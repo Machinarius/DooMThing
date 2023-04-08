@@ -1,42 +1,69 @@
-﻿using System;
-using Machinarius.DoomThing.Engine;
-using Machinarius.DoomThing.SDLWrappers;
-using SDL2;
+﻿using Machinarius.DoomThing.Engine;
+using Machinarius.DoomThing.Platform;
+using Machinarius.DoomThing.SilkWrappers;
+using Silk.NET.GLFW;
+using Silk.NET.Input;
+using Silk.NET.OpenGL;
+using Silk.NET.Windowing;
 
 namespace Machinarius.DoomThing;
 
 public class EntryPoint {
   public static void Main() {
-    SDLInitializer.Initialize();
+    DoomEngine? engine = null;
+    GL? glContext = null;
+    IInputContext? inputContext = null;
+    Glfw? glfw = null;
 
-    var clock = new SDLClock();
-    using (var window = new SDLWindow("Simple Doom Parser", Configuration.WindowWidth, Configuration.WindowHeight)) {
-      using var renderer = new SDLRenderer(window);
-      var engine = new DoomEngine(Path.Combine(".", "Data", "DOOM1.WAD"), clock, renderer);
-      engine.Initialize();
-
-      var running = true;
-      while (running) {
-        clock.Tick();
-        engine.Update();
-        engine.Draw();
-        running = ShouldGameStillRun();
+    using var window = SilkWindowFactory.Create("Simple Doom Parser", Configuration.WindowWidth, Configuration.WindowHeight);
+    window.Load += () => {
+      glfw = Glfw.GetApi();
+      if (!glfw.Init()) {
+        throw new InvalidOperationException("Could not initialize GLFW");
       }
-    }
+      
+      glContext = window.CreateOpenGL();
+      inputContext = window.CreateInput();
 
-    SDL.SDL_Quit();
+      var renderer = new SilkRenderer(window, glContext, glfw);
+      engine = new DoomEngine(Path.Combine(".", "Data", "DOOM1.WAD"), renderer);
+      engine.Initialize();  
+    };
+
+    window.FramebufferResize += size => {
+      glContext?.Viewport(size);
+    };
+
+    window.Render += deltaTime => {
+      engine?.Update();
+      engine?.Draw();
+
+      glContext?.ClearColor(System.Drawing.Color.Wheat);
+      glContext?.Clear(ClearBufferMask.ColorBufferBit);
+      if (!ShouldGameStillRun(inputContext)) {
+        window.Close();
+      }
+    };
+
+    window.Closing += () => {
+      glfw?.Dispose();
+      glContext?.Dispose();
+      inputContext?.Dispose();
+    };
+
+    window.Run();
   }
 
-  static private bool ShouldGameStillRun() {
-    var running = true;
-    if (SDL.SDL_PollEvent(out var sdlEvent) != 0) {
-      running = sdlEvent.type switch {
-        SDL.SDL_EventType.SDL_QUIT => false,
-        SDL.SDL_EventType.SDL_KEYUP => sdlEvent.key.keysym.sym != SDL.SDL_Keycode.SDLK_ESCAPE,
-        _ => true
-      };
+  static private bool ShouldGameStillRun(IInputContext? inputContext) {
+    if (inputContext == null || inputContext.Keyboards.Count < 1) {
+      // Can't ESC out when there are no keyboards ¯\_(ツ)_/¯
+      return true;
     }
 
-    return running;
+    if (inputContext.Keyboards[0].IsKeyPressed(Key.Escape)) {
+      return false;
+    }
+
+    return true;
   }
 }

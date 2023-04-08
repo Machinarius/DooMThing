@@ -1,12 +1,13 @@
 using System;
 using System.Drawing;
 using System.Numerics;
+using Machinarius.DoomThing.Platform;
 using SDL2;
 using SkiaSharp;
 
 namespace Machinarius.DoomThing.SDLWrappers;
 
-public class SDLRenderer : IDisposable {
+public class SDLRenderer : IGraphicsRenderer, IDisposable {
   public static implicit operator nint(SDLRenderer renderer) => renderer.WindowHandle;
 
   public readonly nint WindowHandle;
