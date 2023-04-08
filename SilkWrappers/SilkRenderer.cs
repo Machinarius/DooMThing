@@ -8,9 +8,11 @@ using System.Numerics;
 namespace Machinarius.DoomThing.Platform;
 
 public class SilkRenderer : IGraphicsRenderer {
-  public SilkRenderer(IWindow window, GL glContext, Glfw glfw) {
-    var grGlInterface = GRGlInterface.CreateOpenGl((name) => {
-      var procAddress = glfw.GetProcAddress(name);
+  public SilkRenderer(IWindow window, GL glContext) {
+    var grGlInterface = GRGlInterface.Create((name) => {
+      if (!window.GLContext.TryGetProcAddress(name, out var procAddress)) {
+        return IntPtr.Zero;
+      }
       return procAddress;
     });
     if (grGlInterface == null) {

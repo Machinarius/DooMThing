@@ -1,7 +1,6 @@
 ﻿using Machinarius.DoomThing.Engine;
 using Machinarius.DoomThing.Platform;
 using Machinarius.DoomThing.SilkWrappers;
-using Silk.NET.GLFW;
 using Silk.NET.Input;
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
@@ -13,19 +12,13 @@ public class EntryPoint {
     DoomEngine? engine = null;
     GL? glContext = null;
     IInputContext? inputContext = null;
-    Glfw? glfw = null;
 
     using var window = SilkWindowFactory.Create("Simple Doom Parser", Configuration.WindowWidth, Configuration.WindowHeight);
     window.Load += () => {
-      glfw = Glfw.GetApi();
-      if (!glfw.Init()) {
-        throw new InvalidOperationException("Could not initialize GLFW");
-      }
-      
       glContext = window.CreateOpenGL();
       inputContext = window.CreateInput();
 
-      var renderer = new SilkRenderer(window, glContext, glfw);
+      var renderer = new SilkRenderer(window, glContext);
       engine = new DoomEngine(Path.Combine(".", "Data", "DOOM1.WAD"), renderer);
       engine.Initialize();  
     };
@@ -46,7 +39,7 @@ public class EntryPoint {
     };
 
     window.Closing += () => {
-      glfw?.Dispose();
+      //glfw?.Dispose();
       glContext?.Dispose();
       inputContext?.Dispose();
     };
