@@ -25,9 +25,10 @@ public class SDLRenderer : IDisposable {
     var (windowWidth, windowHeight) = window.GetSize();
     glInterface = GRGlInterface.CreateOpenGl((name) => {
       var procAddress = SDL.SDL_GL_GetProcAddress(name);
+      Console.WriteLine($"Returning {procAddress} for name {name}");
       return procAddress;
     });
-    if (glInterface == null) {
+    if (glInterface == null || !glInterface.Validate()) {
       throw new InvalidOperationException("Could not create a GRGLInterface");
     }
 
