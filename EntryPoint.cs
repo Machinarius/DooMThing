@@ -39,7 +39,6 @@ public class EntryPoint {
     };
 
     window.Closing += () => {
-      //glfw?.Dispose();
       glContext?.Dispose();
       inputContext?.Dispose();
     };

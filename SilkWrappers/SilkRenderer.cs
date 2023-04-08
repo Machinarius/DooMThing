@@ -9,14 +9,19 @@ namespace Machinarius.DoomThing.Platform;
 
 public class SilkRenderer : IGraphicsRenderer {
   public SilkRenderer(IWindow window, GL glContext) {
+    if (!window.GLContext.IsCurrent) {
+      window.GLContext.MakeCurrent();
+    }
+
     var grGlInterface = GRGlInterface.Create((name) => {
       if (!window.GLContext.TryGetProcAddress(name, out var procAddress)) {
-        return IntPtr.Zero;
+        procAddress = IntPtr.Zero;
       }
+      Console.WriteLine($"Returning address {procAddress} for proc {name}");
       return procAddress;
     });
-    if (grGlInterface == null) {
-      throw new InvalidOperationException("Could not create a GLFW GRGL context");
+    if (grGlInterface == null || !grGlInterface.Validate()) {
+      throw new InvalidOperationException("Could not create a valid GRGL context");
     }
 
     throw new NotImplementedException();
