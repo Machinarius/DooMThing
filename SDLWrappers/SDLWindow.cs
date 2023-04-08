@@ -14,8 +14,13 @@ public class SDLWindow : IDisposable {
       SDL.SDL_WINDOWPOS_CENTERED,
       width,
       height,
-      SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN
+      SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN | SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL
     );
+  }
+
+  public (int Width, int Height) GetSize() {
+    SDL.SDL_GetWindowSize(Handle, out var Width, out var Height);
+    return (Width, Height);
   }
 
   public void Dispose() {

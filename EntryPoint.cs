@@ -10,7 +10,7 @@ public class EntryPoint {
     SDLInitializer.Initialize();
 
     var clock = new SDLClock();
-    using (var window = new SDLWindow("Simple Triangle", Configuration.WindowWidth, Configuration.WindowHeight)) {
+    using (var window = new SDLWindow("Simple Doom Parser", Configuration.WindowWidth, Configuration.WindowHeight)) {
       using var renderer = new SDLRenderer(window);
       var engine = new DoomEngine(Path.Combine(".", "Data", "DOOM1.WAD"), clock, renderer);
       engine.Initialize();
